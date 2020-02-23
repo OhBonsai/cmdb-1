@@ -16,7 +16,7 @@
       <div v-if="activeTabKey === 'tab_1'">
         <a-card
           type="inner"
-          :title="group.name || '其他'"
+          :title="group.name || $t('tip.other')"
           :key="group.name"
           v-for="group in attributeGroups"
         >
@@ -79,6 +79,7 @@
 </template>
 
 <script>
+import i18n from '@/locales'
 import DescriptionList from '@/components/DescriptionList'
 
 import { getCITypeGroupById } from '@/api/cmdb/CIType'
@@ -116,22 +117,22 @@ export default {
       tabList: [
         {
           key: 'tab_1',
-          tab: '属性'
+          tab: this.$t('ci.attribute')
         },
         {
           key: 'tab_2',
-          tab: '关系'
+          tab: this.$t('ci.relation')
         },
         {
           key: 'tab_3',
-          tab: '操作历史'
+          tab: this.$t('ci.history')
         }
       ],
       activeTabKey: 'tab_1',
       rowSpanMap: {},
       historyColumns: [
         {
-          title: '时间',
+          title: this.$t('ci.time'),
           dataIndex: 'created_at',
           key: 'created_at',
           customRender: (value, row, index) => {
@@ -144,7 +145,7 @@ export default {
           }
         },
         {
-          title: '用户',
+          title: this.$t('ci.user'),
           dataIndex: 'username',
           key: 'username',
           customRender: (value, row, index) => {
@@ -157,13 +158,13 @@ export default {
           }
         },
         {
-          title: '操作',
+          title: this.$t('tip.operate'),
           dataIndex: 'operate_type',
           key: 'operate_type',
           scopedSlots: { customRender: 'operate_type' }
         },
         {
-          title: '属性',
+          title: this.$t('ci.attribute'),
           dataIndex: 'attr_alias',
           key: 'attr_name'
         },
@@ -181,21 +182,12 @@ export default {
       ciHistory: []
     }
   },
-  created () {
-    // this.getAttributes()
-    // this.getCI()
-    // this.getFirstCIs()
-    // this.getSecondCIs()
-    // this.getParentCITypes()
-    // this.getChildCITypes()
-    // this.getCIHistory()
-  },
   filters: {
     operateTypeFilter (operateType) {
       const operateTypeMap = {
-        '0': '新增',
-        '1': '删除',
-        '2': '修改'
+        '0': i18n.t('button.add'),
+        '1': i18n.t('button.delete'),
+        '2': i18n.t('button.update')
       }
       return operateTypeMap[operateType]
     }

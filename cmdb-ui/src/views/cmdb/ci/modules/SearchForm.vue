@@ -12,7 +12,7 @@
           <a-form-item :label="prefAttr.alias || prefAttr.name">
             <a-select
               v-model="queryParam[prefAttr.name]"
-              placeholder="请选择"
+              :placeholder="$t('tip.pleaseSelect')"
               v-if="prefAttr.is_choice"
             >
               <a-select-option
@@ -45,7 +45,7 @@
             v-for="item in preferenceAttrList.slice(4)"
           >
             <a-form-item :label="item.alias || item.name">
-              <a-select v-model="queryParam[item.name]" placeholder="请选择" v-if="item.is_choice">
+              <a-select v-model="queryParam[item.name]" :placeholder="$t('tip.pleaseSelect')" v-if="item.is_choice">
                 <a-select-option
                   :value="choice"
                   :key="'advanced_' + item.name + index"
@@ -73,14 +73,14 @@
             class="table-page-search-submitButtons"
             :style="advanced && { float: 'right', overflow: 'hidden' } || {} "
           >
-            <a-button type="primary" @click="$emit('refresh', true)" v-if="preferenceAttrList.length">查询</a-button>
-            <a-button style="margin-left: 8px" @click="() => queryParam = {}" v-if="preferenceAttrList.length">重置</a-button>
+            <a-button type="primary" @click="$emit('refresh', true)" v-if="preferenceAttrList.length">{{ $t('button.query') }}</a-button>
+            <a-button style="margin-left: 8px" @click="() => queryParam = {}" v-if="preferenceAttrList.length">{{ $t('button.reset') }}</a-button>
             <a
               @click="toggleAdvanced"
               style="margin-left: 8px"
               v-if="preferenceAttrList.length > 4"
             >
-              {{ advanced ? '收起' : '展开' }}
+              {{ advanced ? $t('tip.fold') : $t('tip.unfold') }}
               <a-icon :type="advanced ? 'up' : 'down'" />
             </a>
           </span>
@@ -104,7 +104,6 @@ var valueTypeMap = {
 export default {
   data () {
     return {
-      // 高级搜索 展开/关闭
       advanced: false,
       queryParam: {},
       valueTypeMap: valueTypeMap

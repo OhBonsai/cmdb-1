@@ -3,10 +3,10 @@
     <a-form :form="form" style="max-width: 500px; margin: 30px auto 0;">
       <a-row>
         <a-col :span="18">
-          <a-form-item label="模板类型" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-form-item :label="$t('batch.modelType')" :labelCol="labelCol" :wrapperCol="wrapperCol">
             <a-select
-              placeholder="--请选择模板类型--"
-              v-decorator="['ciTypes', { rules: [{required: true, message: '模板类型必须选择'}] }]"
+              :placeholder="$t('batch.pleaseSelectModelType')"
+              v-decorator="['ciTypes', { rules: [{required: true, message: 'CI Type must be selected'}] }]"
               @change="selectCiType"
             >
               <a-select-option v-for="ciType in ciTypeList" :key="ciType.name" :value="ciType.id">{{ ciType.alias }}</a-select-option>
@@ -19,7 +19,7 @@
               style="margin-left: 20px"
               :disabled="downLoadButtonDis"
               @click="downLoadExcel"
-            >下载模板</a-button>
+            >{{ $t('button.downloadTemplate') }}</a-button>
           </a-form-item>
         </a-col>
       </a-row>
@@ -54,7 +54,6 @@ export default {
   },
   methods: {
     selectCiType (el) {
-      // 当选择好模板类型时的回调函数
       this.downLoadButtonDis = false
       this.selectNum = el
       getCITypeAttributesById(el).then(res => {

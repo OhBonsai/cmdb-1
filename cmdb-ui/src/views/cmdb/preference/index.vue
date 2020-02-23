@@ -17,11 +17,11 @@
                 <span
                   :class="item.is_subscribed?'subscribe-success':'unsubscribe'"
                   slot="title"
-                >{{ item.is_subscribed ? "已订阅" : "未订阅" }}</span>
+                >{{ item.is_subscribed ? $t('tip.subscribed') : $t('tip.unsubscribed') }}</span>
               </a-card-meta>
               <template class="ant-card-actions" slot="actions">
-                <a :disabled="!item.is_subscribed" @click="unsubscribe(item.id)">取消</a>
-                <a @click="showDrawer(item.id, item.alias || item.name)">订阅</a>
+                <a :disabled="!item.is_subscribed" @click="unsubscribe(item.id)">{{ $t('button.cancel') }}</a>
+                <a @click="showDrawer(item.id, item.alias || item.name)">{{ $t('button.subscribe') }}</a>
               </template>
             </a-card>
           </template>
@@ -31,25 +31,25 @@
       <template>
         <div>
           <a-drawer
-            :title="'订阅模型: ' + typeName"
+            :title="$t('preference.subscribeModel') +':'+ typeName"
             :width="600"
             @close="onClose"
             :visible="visible"
             :wrapStyle="{height: 'calc(100% - 108px)', overflow: 'auto', paddingBottom: '108px'}"
           >
-            <a-alert message="既可以定义树形视图, 也可以订阅资源视图, 资源视图会在SideBar单独呈现" type="info" showIcon />
+            <a-alert :message="$t('preference.subFormTip')" type="info" showIcon />
             <a-divider>
-              树形视图
+              {{ $t('menu.treeViews') }}
               <span
                 v-if="treeSubscribed"
                 style="font-weight: 500; font-size: 12px; color: green"
-              >已订阅</span>
-              <span style="font-weight: 500; font-size: 12px; color: red" v-else>未订阅</span>
+              >{{ $t('tip.subscribed') }}</span>
+              <span style="font-weight: 500; font-size: 12px; color: red" v-else>{{ $t('tip.unsubscribed') }}</span>
             </a-divider>
             <a-select
               ref="tree"
               mode="multiple"
-              placeholder="- - 目录层级的选择 - -"
+              :placeholder="$t('ci.selectLevel')"
               :value="treeViews"
               style="width: 100%"
               @change="handleTreeSub"
@@ -60,17 +60,17 @@
               @click="subTreeSubmit"
               type="primary"
               :style="{float: 'right', marginTop: '10px'}"
-            >订阅</a-button>
+            >{{ $t('button.subscribe') }}</a-button>
             <br />
             <br />
 
             <a-divider>
-              资源视图
+              {{ $t('preference.resourceView') }}
               <span
                 v-if="instanceSubscribed"
                 style="font-weight: 500; font-size: 12px; color: green"
-              >已订阅</span>
-              <span style="font-weight: 500; font-size: 12px; color: red" v-else>未订阅</span>
+              >{{ $t('tip.subscribed') }}</span>
+              <span style="font-weight: 500; font-size: 12px; color: red" v-else>{{ $t('tip.unsubscribed') }}</span>
             </a-divider>
             <template>
               <a-transfer
@@ -80,13 +80,13 @@
                   width: '230px',
                   height: '500px',
                 }"
-                :titles="['未选属性','已选属性']"
+                :titles="[$t('tip.unselectedAttribute'), $t('tip.selectedAttribute')]"
                 :render="item=>item.title"
                 :targetKeys="selectedAttrList"
                 @change="handleChange"
                 @search="handleSearch"
               >
-                <span slot="notFoundContent">没数据</span>
+                <span slot="notFoundContent">{{ $t('tip.noData') }}</span>
               </a-transfer>
             </template>
             <div
@@ -101,8 +101,8 @@
                 textAlign: 'right',
               }"
             >
-              <a-button :style="{marginRight: '8px'}" @click="onClose">取消</a-button>
-              <a-button @click="subInstanceSubmit" type="primary">订阅</a-button>
+              <a-button :style="{marginRight: '8px'}" @click="onClose">{{ $t('button.cancel') }}</a-button>
+              <a-button @click="subInstanceSubmit" type="primary">{{ $t('button.subscribe') }}</a-button>
             </div>
           </a-drawer>
         </div>
@@ -161,15 +161,15 @@ export default {
     unsubscribe (citypeId) {
       const that = this
       this.$confirm({
-        title: '警告',
-        content: '真的要取消订阅吗 ?',
+        title: that.$t('tip.warning'),
+        content: that.$t('preference.cancelSubscribeConfirm'),
         onOk () {
           const unsubCIType = subscribeCIType(citypeId, '')
           const unsubTree = subscribeTreeView(citypeId, '')
           Promise.all([unsubCIType, unsubTree])
             .then(() => {
               notification.success({
-                message: '取消成功'
+                message: that.$t('tip.cancelSuccess')
               })
               that.resetRoute()
             })
@@ -183,7 +183,6 @@ export default {
         onCancel () {}
       })
     },
-    // 显示右边的弹出框
     showDrawer (typeId, typeName) {
       this.typeId = typeId
       this.typeName = typeName
@@ -223,17 +222,15 @@ export default {
     handleTreeSub (values) {
       this.treeViews = values
     },
-    // 处理点击改变事件
     handleChange (targetKeys, direction, moveKeys) {
       this.selectedAttrList = targetKeys
     },
     handleSearch (dir, value) {},
-    // 处理提交事件
     subInstanceSubmit () {
       subscribeCIType(this.typeId, this.selectedAttrList)
         .then(res => {
           notification.success({
-            message: '订阅成功'
+            message: this.$t('preference.subscribeSuccess')
           })
           this.resetRoute()
         })
@@ -281,7 +278,7 @@ export default {
       subscribeTreeView(this.typeId, this.treeViews)
         .then(res => {
           notification.success({
-            message: '订阅成功'
+            message: this.$t('preference.subscribeSuccess')
           })
         })
         .catch(e => {
